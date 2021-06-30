@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.Random;
+import java.util.Scanner;
 
 public class VideoPlayer {
 
@@ -327,12 +329,100 @@ public class VideoPlayer {
 
 
   public void searchVideos(String searchTerm) {
-    System.out.println("searchVideos needs implementation");
+    List<Video> allvideos=videoLibrary.getVideos();
+    List<Video> resultvideos=new LinkedList<>();
+    for(Video i:allvideos){
+      if(i.getTitle().toLowerCase().contains(searchTerm.toLowerCase())){
+        resultvideos.add(i);
+      }
+    }
+    allvideos=resultvideos;
+
+    if(allvideos.isEmpty()){
+      System.out.println("No search results for "+searchTerm);
+      return;
+    }
+    //sort by title
+    Collections.sort(allvideos, compareByTitle );
+
+    System.out.println("Here are the results for "+searchTerm+":");
+    int counter=0;
+    for (Video i: allvideos){
+      counter++;
+      String tags="";
+
+      for(String j:i.getTags()){
+        //to get all tags
+        tags+=j;
+        tags+=" ";
+      }
+
+      System.out.println("  "+counter+") "+i.getTitle()+" ("+i.getVideoId()+") ["+tags.trim()+"]");
+    }  
+    System.out.println("Would you like to play any of the above? If yes, specify the number of the video.");
+    System.out.println("If your answer is not a valid number, we will assume it's a no.");
+    var scanner = new Scanner(System.in);
+    String str=scanner.nextLine();
+    try{
+      int num = Integer.parseInt(str);
+      if(num>counter||num<1)
+        throw new NumberFormatException("wrong number");
+      Video toplay=allvideos.get(num-1);
+      playVideo(toplay.getVideoId());
+
+    } catch (NumberFormatException e) {}
   }
 
-  public void searchVideosWithTag(String videoTag) {
-    System.out.println("searchVideosWithTag needs implementation");
-  }
+  public void searchVideosWithTag(String videotag) {
+    if(videotag.charAt(0)!='#'){
+      System.out.println("No search results for "+videotag);
+      return;
+    }
+    String videoTag=videotag.substring(1);
+    List<Video> allvideos=videoLibrary.getVideos();
+    List<Video> resultvideos=new LinkedList<>();
+    for(Video i:allvideos){
+      for(String j:i.getTags()){
+        if(j.toLowerCase().contains(videoTag.toLowerCase())){
+          resultvideos.add(i);
+        }
+      }
+    }
+    allvideos=resultvideos;
+
+    if(allvideos.isEmpty()){
+      System.out.println("No search results for "+videotag);
+      return;
+    }
+    //sort by title
+    Collections.sort(allvideos, compareByTitle );
+
+    System.out.println("Here are the results for "+videotag+":");
+    int counter=0;
+    for (Video i: allvideos){
+      counter++;
+      String tags="";
+
+      for(String j:i.getTags()){
+        //to get all tags
+        tags+=j;
+        tags+=" ";
+      }
+
+      System.out.println("  "+counter+") "+i.getTitle()+" ("+i.getVideoId()+") ["+tags.trim()+"]");
+    }  
+    System.out.println("Would you like to play any of the above? If yes, specify the number of the video.");
+    System.out.println("If your answer is not a valid number, we will assume it's a no.");
+    var scanner = new Scanner(System.in);
+    String str=scanner.nextLine();
+    try{
+      int num = Integer.parseInt(str);
+      if(num>counter||num<1)
+        throw new NumberFormatException("wrong number");
+      Video toplay=allvideos.get(num-1);
+      playVideo(toplay.getVideoId());
+
+    } catch (NumberFormatException e) {}  }
 
   public void flagVideo(String videoId) {
     System.out.println("flagVideo needs implementation");

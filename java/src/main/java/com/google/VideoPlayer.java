@@ -269,15 +269,50 @@ public class VideoPlayer {
   }
 
   public void removeFromPlaylist(String playlistName, String videoId) {
-    System.out.println("removeFromPlaylist needs implementation");
+    String toplaylist=playlist.getPlaylist(playlistName);
+
+    if(toplaylist==null){
+      System.out.println("Cannot remove video from "+playlistName+": Playlist does not exist");
+      return;
+    }
+
+    Video toplay=videoLibrary.getVideo(videoId);
+
+    //if video not found
+    if(toplay==null){
+      System.out.println("Cannot remove video from "+toplaylist+": Video does not exist");
+      return;
+    }
+
+    if(playlist.findVideoinPL(videoId, toplaylist)==null){
+      System.out.println("Cannot remove video from "+toplaylist+": Video is not in playlist");
+    }
+    else{
+      playlist.removeVideoFromPlaylist(toplaylist, toplay);
+      System.out.println("Removed video from "+toplaylist+": "+toplay.getTitle());
+    }
   }
 
   public void clearPlaylist(String playlistName) {
-    System.out.println("clearPlaylist needs implementation");
+    String toplaylist=playlist.getPlaylist(playlistName);
+
+    if(toplaylist==null){
+      System.out.println("Cannot clear playlist "+playlistName+": Playlist does not exist");
+      return;
+    }
+    playlist.addPlaylist(playlistName);
+    System.out.println("Successfully removed all videos from "+toplaylist);
   }
 
   public void deletePlaylist(String playlistName) {
-    System.out.println("deletePlaylist needs implementation");
+    String toplaylist=playlist.getPlaylist(playlistName);
+
+    if(toplaylist==null){
+      System.out.println("Cannot delete playlist "+playlistName+": Playlist does not exist");
+      return;
+    }
+    playlist.deletePlaylist(toplaylist);
+    System.out.println("Successfully removed all videos from "+toplaylist);
   }
 
   public void searchVideos(String searchTerm) {

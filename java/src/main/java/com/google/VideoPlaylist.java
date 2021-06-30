@@ -22,6 +22,10 @@ class VideoPlaylist {
 
     }
 
+    public void deletePlaylist(String name){
+        playlists.remove(name);
+    }
+
     //get the playlist
     String getPlaylist(String name){
         for (Map.Entry<String, HashMap<String,Video>> mapElement : playlists.entrySet()) {
@@ -63,5 +67,13 @@ class VideoPlaylist {
         ArrayList<Video> raw= new ArrayList<>(listofVideos.values());
         raw.removeIf(Objects::isNull);
         return raw;
+    }
+    void removeVideoFromPlaylist(String toplaylist, Video toplay){
+        HashMap<String,Video> listofVideos=playlists.get(toplaylist);
+        if(listofVideos==null){
+            listofVideos=new HashMap<>();
+        }
+        listofVideos.remove(toplay.getVideoId());
+        playlists.put(toplaylist, listofVideos);
     }
 }

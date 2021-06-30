@@ -1,6 +1,6 @@
 package com.google;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.List;
@@ -10,13 +10,13 @@ import java.util.Objects;
 /** A class used to represent a Playlist */
 class VideoPlaylist {
     VideoPlaylist(){
-        playlists=new HashMap<>();
+        playlists=new LinkedHashMap<>();
     }
-    private static HashMap<String, HashMap<String,Video>> playlists;
+    private static LinkedHashMap<String, LinkedHashMap<String,Video>> playlists;
     
     //add new playlist with no songs initially
     public void addPlaylist(String name){
-        HashMap<String,Video>emptyone=new HashMap<>();
+        LinkedHashMap<String,Video>emptyone=new LinkedHashMap<>();
         emptyone.put(null,null);
         playlists.put(name,null);
 
@@ -28,7 +28,7 @@ class VideoPlaylist {
 
     //get the playlist
     String getPlaylist(String name){
-        for (Map.Entry<String, HashMap<String,Video>> mapElement : playlists.entrySet()) {
+        for (Map.Entry<String, LinkedHashMap<String,Video>> mapElement : playlists.entrySet()) {
             String key =mapElement.getKey().toLowerCase();
 
             if(key.equalsIgnoreCase(name.toLowerCase())){
@@ -47,21 +47,21 @@ class VideoPlaylist {
 
     //find video in playlist
     Video findVideoinPL(String videoID, String playlistname){
-        HashMap<String,Video> listofVideos=playlists.get(playlistname);
+        LinkedHashMap<String,Video> listofVideos=playlists.get(playlistname);
         if(listofVideos==null)
             return null;
         return listofVideos.get(videoID);
     }
     void addVideoToPlaylist(String playlistname, Video video){
-        HashMap<String,Video> listofVideos=playlists.get(playlistname);
+        LinkedHashMap<String,Video> listofVideos=playlists.get(playlistname);
         if(listofVideos==null){
-            listofVideos=new HashMap<>();
+            listofVideos=new LinkedHashMap<>();
         }
         listofVideos.put(video.getVideoId(),video);
         playlists.put(playlistname, listofVideos);
     }
     ArrayList<Video> getVideos(String playlistname) {
-        HashMap<String,Video> listofVideos=playlists.get(playlistname);
+        LinkedHashMap<String,Video> listofVideos=playlists.get(playlistname);
         if(listofVideos==null)
             return new ArrayList<>();
         ArrayList<Video> raw= new ArrayList<>(listofVideos.values());
@@ -69,9 +69,9 @@ class VideoPlaylist {
         return raw;
     }
     void removeVideoFromPlaylist(String toplaylist, Video toplay){
-        HashMap<String,Video> listofVideos=playlists.get(toplaylist);
+        LinkedHashMap<String,Video> listofVideos=playlists.get(toplaylist);
         if(listofVideos==null){
-            listofVideos=new HashMap<>();
+            listofVideos=new LinkedHashMap<>();
         }
         listofVideos.remove(toplay.getVideoId());
         playlists.put(toplaylist, listofVideos);

@@ -21,35 +21,56 @@ public class VideoPlayer {
 
   public void showAllVideos() {
     List<Video> allvideos=videoLibrary.getVideos();
+
+    //sort by title
     Collections.sort(allvideos, compareByTitle );
+
     for (Video i: allvideos){
       String tags="";
+
       for(String j:i.getTags()){
+        //to get all tags
         tags+=j;
         tags+=" ";
       }
+
       System.out.println(i.getTitle()+" ("+i.getVideoId()+") ["+tags.trim()+"]");
     }
   }
 
   public void playVideo(String videoId) {
     Video toplay=videoLibrary.getVideo(videoId);
+
+    //if video not found
     if(toplay==null){
       System.out.println("Cannot play video: Video does not exist");
       return;
     }
+
+    //if nothing is palaying currentstate is -1 (stopped)
     if(currentlyplaying.currentState()==-1){
       System.out.println("Playing Video: "+toplay.getTitle());
     }
+
+    //if a song is currently being played
     else if(currentlyplaying.currentState()==1){
       System.out.println("Stopping Video: "+currentlyplaying.currentVideo().getTitle());
       System.out.println("Playing Video: "+toplay.getTitle());
     }
+
     currentlyplaying.changeVideo(toplay);
   }
 
   public void stopVideo() {
-    System.out.println("stopVideo needs implementation");
+  
+    //if nothing is palaying currentstate is -1 (stopped)
+    if(currentlyplaying.currentState()==-1){
+      System.out.println("Cannot stop video: No video is currently playing");
+    }  
+    else if(currentlyplaying.currentState()==1){
+      System.out.println("Stopping Video: "+currentlyplaying.currentVideo().getTitle());
+      currentlyplaying.changeState(-1);
+    }
   }
 
   public void playRandomVideo() {

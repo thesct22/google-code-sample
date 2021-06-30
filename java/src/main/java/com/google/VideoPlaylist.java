@@ -45,6 +45,15 @@ class VideoPlaylist {
         return listOfKeys;
     }
 
+    //get playlists length
+    int playlistLength(String name){
+        LinkedHashMap<String,Video> listofVideos=playlists.get(name);
+        if(listofVideos==null)
+            return 0;
+        return listofVideos.size();
+
+    }
+
     //find video in playlist
     Video findVideoinPL(String videoID, String playlistname){
         LinkedHashMap<String,Video> listofVideos=playlists.get(playlistname);

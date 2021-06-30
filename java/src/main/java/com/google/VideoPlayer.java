@@ -277,7 +277,12 @@ public class VideoPlayer {
     System.out.println("Showing all playlists:");
     Collections.sort(allplaylists);
     for (String i: allplaylists){
-      System.out.println(i);
+      int length=playlist.playlistLength(i);
+      System.out.print(i+" ("+length+" video");
+      if(length==1)
+        System.out.println(")");
+      else
+        System.out.println("s)");
     }
 
   }
@@ -287,6 +292,13 @@ public class VideoPlayer {
 
     if(toplaylist==null){
       System.out.println("Cannot show playlist "+playlistName+": Playlist does not exist");
+      System.out.println("Would you like to create a playlist by this name instead?");
+      System.out.println("Type in 'Yes' or 'Y' to confirm. Any other answer will be taken as a no");
+      Scanner sc=new Scanner(System.in);
+      String yesOrNo = sc.nextLine();
+      sc.close();
+      if(yesOrNo.toLowerCase().equals("yes")||yesOrNo.toLowerCase().equals("y"))
+        createPlaylist(playlistName);
       return;
     }
 
@@ -456,6 +468,7 @@ public class VideoPlayer {
     System.out.println("If your answer is not a valid number, we will assume it's a no.");
     var scanner = new Scanner(System.in);
     String str=scanner.nextLine();
+    scanner.close();
     try{
       int num = Integer.parseInt(str);
       if(num>counter||num<1)

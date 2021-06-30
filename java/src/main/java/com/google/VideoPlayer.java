@@ -226,7 +226,8 @@ public class VideoPlayer {
   public void showAllPlaylists() {
 
     List<String> allplaylists=playlist.getPlaylists();
-
+    if(allplaylists.isEmpty())
+      System.out.println("No playlists exist yet");
     //sort by title
     Collections.sort(allplaylists );
 
@@ -237,7 +238,34 @@ public class VideoPlayer {
   }
 
   public void showPlaylist(String playlistName) {
-    System.out.println("showPlaylist needs implementation");
+    String toplaylist=playlist.getPlaylist(playlistName);
+
+    if(toplaylist==null){
+      System.out.println("Cannot show playlist "+playlistName+": Playlist does not exist");
+      return;
+    }
+
+    System.out.println("Showing playlist: "+toplaylist);
+
+    ArrayList<Video> listofvideos=playlist.getVideos(playlistName);
+    if(listofvideos.isEmpty()){
+      System.out.println("  No videos here yet");
+      return;
+    }
+    if(listofvideos.size()>1)
+       Collections.sort(listofvideos, compareByTitle );
+
+    for (Video i: listofvideos){
+      String tags="";
+
+      for(String j:i.getTags()){
+        //to get all tags
+        tags+=j;
+        tags+=" ";
+      }
+
+      System.out.println("  "+i.getTitle()+" ("+i.getVideoId()+") ["+tags.trim()+"]");
+    }
   }
 
   public void removeFromPlaylist(String playlistName, String videoId) {

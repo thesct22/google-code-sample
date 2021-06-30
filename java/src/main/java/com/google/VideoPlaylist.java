@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /** A class used to represent a Playlist */
 class VideoPlaylist {
@@ -17,7 +18,7 @@ class VideoPlaylist {
     public void addPlaylist(String name){
         HashMap<String,Video>emptyone=new HashMap<>();
         emptyone.put(null,null);
-        playlists.put(name,emptyone);
+        playlists.put(name,null);
 
     }
 
@@ -54,5 +55,13 @@ class VideoPlaylist {
         }
         listofVideos.put(video.getVideoId(),video);
         playlists.put(playlistname, listofVideos);
+    }
+    ArrayList<Video> getVideos(String playlistname) {
+        HashMap<String,Video> listofVideos=playlists.get(playlistname);
+        if(listofVideos==null)
+            return new ArrayList<>();
+        ArrayList<Video> raw= new ArrayList<>(listofVideos.values());
+        raw.removeIf(Objects::isNull);
+        return raw;
     }
 }

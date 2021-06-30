@@ -1,9 +1,16 @@
 package com.google;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Comparator;
+
 public class VideoPlayer {
 
   private final VideoLibrary videoLibrary;
-
+  private static CurrentlyPlaying currentlyplaying;
+  
+  Comparator<Video> compareByTitle = (Video o1, Video o2) -> o1.getTitle().compareTo( o2.getTitle() );
   public VideoPlayer() {
     this.videoLibrary = new VideoLibrary();
   }
@@ -13,11 +20,32 @@ public class VideoPlayer {
   }
 
   public void showAllVideos() {
-    System.out.println("showAllVideos needs implementation");
+    List<Video> allvideos=videoLibrary.getVideos();
+    Collections.sort(allvideos, compareByTitle );
+    for (Video i: allvideos){
+      String tags="";
+      for(String j:i.getTags()){
+        tags+=j;
+        tags+=" ";
+      }
+      System.out.println(i.getTitle()+" ("+i.getVideoId()+") ["+tags.trim()+"]");
+    }
   }
 
   public void playVideo(String videoId) {
-    System.out.println("playVideo needs implementation");
+    Video toplay=videoLibrary.getVideo(videoId);
+    if(toplay==null){
+      System.out.println("Cannot play video: Video does not exist");
+      return;
+    }
+    if(currentlyplaying.currentState()==-1){
+      System.out.println("Playing Video: "+toplay.getTitle());
+    }
+    else if(currentlyplaying.currentState()==1){
+      System.out.println("Stopping Video: "+currentlyplaying.currentVideo().getTitle());
+      System.out.println("Playing Video: "+toplay.getTitle());
+    }
+    currentlyplaying.changeVideo(toplay);
   }
 
   public void stopVideo() {

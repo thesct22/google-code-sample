@@ -8,11 +8,14 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.Scanner;
 
+import javax.lang.model.util.ElementScanner6;
+
 public class VideoPlayer {
 
   private final VideoLibrary videoLibrary;
-  private  CurrentlyPlaying currentlyplaying = new CurrentlyPlaying();
-  private  VideoPlaylist playlist = new VideoPlaylist();
+  private CurrentlyPlaying currentlyplaying = new CurrentlyPlaying();
+  private VideoPlaylist playlist = new VideoPlaylist();
+  private FlaggedVideos flaggedvideos= new FlaggedVideos();
   
   Comparator<Video> compareByTitle = (Video o1, Video o2) -> o1.getTitle().compareTo( o2.getTitle() );
   public VideoPlayer() {
@@ -425,11 +428,41 @@ public class VideoPlayer {
     } catch (NumberFormatException e) {}  }
 
   public void flagVideo(String videoId) {
-    System.out.println("flagVideo needs implementation");
+    Video toflag=videoLibrary.getVideo(videoId);
+
+    //if video not found
+    if(toflag==null){
+      System.out.println("Cannot flag video: Video does not exist");
+      return;
+    }
+    if(flaggedvideos.findflagged(videoId)==null){
+      flaggedvideos.flagvideo(videoId);
+      System.out.print("Successfully flagged video: "+toflag.getTitle());
+      System.out.println(" (reason: "+flaggedvideos.findflagged(videoId)+ ")");
+    }
+    else{
+      System.out.println("Cannot flag video: Video is already flagged");
+    }
+    
   }
 
   public void flagVideo(String videoId, String reason) {
-    System.out.println("flagVideo needs implementation");
+    Video toflag=videoLibrary.getVideo(videoId);
+
+    //if video not found
+    if(toflag==null){
+      System.out.println("Cannot flag video: Video does not exist");
+      return;
+    }
+    
+    if(flaggedvideos.findflagged(videoId)==null){
+        flaggedvideos.flagvideo(videoId,reason);
+        System.out.print("Successfully flagged video: "+toflag.getTitle());
+        System.out.println(" (reason: "+flaggedvideos.findflagged(videoId)+ ")");
+    }
+    else{
+        System.out.println("Cannot flag video: Video is already flagged");
+      }
   }
 
   public void allowVideo(String videoId) {

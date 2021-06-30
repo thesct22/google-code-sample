@@ -185,14 +185,42 @@ public class VideoPlayer {
   }
 
   public void createPlaylist(String playlistName) {
+    //check if present already
     if(playlist.getPlaylist(playlistName)!=null)
       System.out.println("Cannot create playlist: A playlist with the same name already exists");
-    else
+    
+      //if not present then add to list
+    else{
       playlist.addPlaylist(playlistName);
+      System.out.println("Successfully created new playlist: "+playlistName);
+    }
   }
 
   public void addVideoToPlaylist(String playlistName, String videoId) {
-    System.out.println("addVideoToPlaylist needs implementation");
+
+    String toplaylist=playlist.getPlaylist(playlistName);
+
+    if(toplaylist==null){
+      System.out.println("Cannot add video to "+playlistName+": Playlist does not exist");
+      return;
+    }
+
+    Video toplay=videoLibrary.getVideo(videoId);
+
+    //if video not found
+    if(toplay==null){
+      System.out.println("Cannot add video to "+toplaylist+": Video does not exist");
+      return;
+    }
+
+    if(playlist.findVideoinPL(videoId, toplaylist)!=null){
+      System.out.println("Cannot add video to "+toplaylist+": Video already added");
+    }
+    else{
+      playlist.addVideoToPlaylist(toplaylist, toplay);
+      System.out.println("Added video to "+toplaylist+": "+toplay.getTitle());
+    }
+
   }
 
   public void showAllPlaylists() {
@@ -202,9 +230,7 @@ public class VideoPlayer {
     //sort by title
     Collections.sort(allplaylists );
 
-    System.out.println("Here's a list of all available videos:");
     for (String i: allplaylists){
-
       System.out.println(i);
     }
 

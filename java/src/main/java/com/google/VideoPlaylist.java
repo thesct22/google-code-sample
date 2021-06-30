@@ -11,21 +11,22 @@ class VideoPlaylist {
     VideoPlaylist(){
         playlists=new HashMap<>();
     }
-    private static HashMap<String, Video> playlists;
+    private static HashMap<String, HashMap<String,Video>> playlists;
     
     //add new playlist with no songs initially
     public void addPlaylist(String name){
-        this.playlists.put(name, null);
+        HashMap<String,Video>emptyone=new HashMap<>();
+        emptyone.put(null,null);
+        playlists.put(name,emptyone);
 
     }
+
     //get the playlist
-    public String getPlaylist(String name){
-        for (Map.Entry<String, Video> mapElement : this.playlists.entrySet()) {
-            String key =mapElement.getKey().toString().toLowerCase();
-            // System.out.println(key);
-            // System.out.println(name);
+    String getPlaylist(String name){
+        for (Map.Entry<String, HashMap<String,Video>> mapElement : playlists.entrySet()) {
+            String key =mapElement.getKey().toLowerCase();
+
             if(key.equalsIgnoreCase(name.toLowerCase())){
-                // System.out.println("qwertty");
                 return mapElement.getKey();
             }
         }
@@ -37,5 +38,21 @@ class VideoPlaylist {
         Set<String> keySet = playlists.keySet();
         ArrayList<String> listOfKeys = new ArrayList<String>(keySet);
         return listOfKeys;
-      }
+    }
+
+    //find video in playlist
+    Video findVideoinPL(String videoID, String playlistname){
+        HashMap<String,Video> listofVideos=playlists.get(playlistname);
+        if(listofVideos==null)
+            return null;
+        return listofVideos.get(videoID);
+    }
+    void addVideoToPlaylist(String playlistname, Video video){
+        HashMap<String,Video> listofVideos=playlists.get(playlistname);
+        if(listofVideos==null){
+            listofVideos=new HashMap<>();
+        }
+        listofVideos.put(video.getVideoId(),video);
+        playlists.put(playlistname, listofVideos);
+    }
 }

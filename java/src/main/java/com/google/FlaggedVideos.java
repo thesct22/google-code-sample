@@ -13,4 +13,7 @@ public class FlaggedVideos {
     String findflagged(String videoId){
         return flagged.get(videoId);
     }
+    void allowvideo(String videoId){
+        flagged.remove(videoId);
+    }
 }

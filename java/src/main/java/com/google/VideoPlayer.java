@@ -9,7 +9,8 @@ import java.util.Random;
 public class VideoPlayer {
 
   private final VideoLibrary videoLibrary;
-  private static CurrentlyPlaying currentlyplaying;
+  private static CurrentlyPlaying currentlyplaying = new CurrentlyPlaying();
+  private static VideoPlaylist playlist = new VideoPlaylist();
   
   Comparator<Video> compareByTitle = (Video o1, Video o2) -> o1.getTitle().compareTo( o2.getTitle() );
   public VideoPlayer() {
@@ -26,6 +27,7 @@ public class VideoPlayer {
     //sort by title
     Collections.sort(allvideos, compareByTitle );
 
+    System.out.println("Here's a list of all available videos:");
     for (Video i: allvideos){
       String tags="";
 
@@ -50,13 +52,13 @@ public class VideoPlayer {
 
     //if nothing is palaying currentstate is -1 (stopped)
     if(currentlyplaying.currentState()==-1){
-      System.out.println("Playing Video: "+toplay.getTitle());
+      System.out.println("Playing video: "+toplay.getTitle());
     }
 
     //if a song is currently being played or paused
     else if(currentlyplaying.currentState()==1||currentlyplaying.currentState()==0){
-      System.out.println("Stopping Video: "+currentlyplaying.currentVideo().getTitle());
-      System.out.println("Playing Video: "+toplay.getTitle());
+      System.out.println("Stopping video: "+currentlyplaying.currentVideo().getTitle());
+      System.out.println("Playing video: "+toplay.getTitle());
     }
 
     currentlyplaying.changeVideo(toplay);
@@ -71,7 +73,8 @@ public class VideoPlayer {
 
     //if a song is currently played or paused
     else if(currentlyplaying.currentState()==1||currentlyplaying.currentState()==0){
-      System.out.println("Stopping Video: "+currentlyplaying.currentVideo().getTitle());
+      System.out.println("Stopping video: "+currentlyplaying.currentVideo().getTitle());
+      currentlyplaying.changeVideo(null);
       currentlyplaying.changeState(-1);
     }
   }
@@ -88,13 +91,13 @@ public class VideoPlayer {
     Video toplay=allvideos.get(index);
 
     if(currentlyplaying.currentState()==-1){
-      System.out.println("Playing Video: "+toplay.getTitle());
+      System.out.println("Playing video: "+toplay.getTitle());
     }
 
     //if a song is currently being played or paused
     else if(currentlyplaying.currentState()==1||currentlyplaying.currentState()==0){
-      System.out.println("Stopping Video: "+currentlyplaying.currentVideo().getTitle());
-      System.out.println("Playing Video: "+toplay.getTitle());
+      System.out.println("Stopping video: "+currentlyplaying.currentVideo().getTitle());
+      System.out.println("Playing video: "+toplay.getTitle());
     }
 
     currentlyplaying.changeVideo(toplay);
@@ -139,11 +142,53 @@ public class VideoPlayer {
   }
 
   public void showPlaying() {
-    System.out.println("showPlaying needs implementation");
+    //if stopped cannot show playing video
+    if(currentlyplaying.currentState()==-1){
+      System.out.println("No video is currently playing");
+    }  
+
+    //if something is playing show the deets
+    else if(currentlyplaying.currentState()==1){
+      Video currentvideo=currentlyplaying.currentVideo();
+
+      System.out.print("Currently playing: ");
+      System.out.print(currentvideo.getTitle()+" (");
+      System.out.print(currentvideo.getVideoId()+") [");
+
+      String tags="";
+
+      for(String j:currentvideo.getTags()){
+        //to get all tags
+        tags+=j;
+        tags+=" ";
+      }
+      System.out.println(tags.trim()+"]");
+    }
+
+    //if paused show all deets and also say its paused
+    else if(currentlyplaying.currentState()==0){
+      Video currentvideo=currentlyplaying.currentVideo();
+
+      System.out.print("Currently playing: ");
+      System.out.print(currentvideo.getTitle()+" (");
+      System.out.print(currentvideo.getVideoId()+") [");
+
+      String tags="";
+
+      for(String j:currentvideo.getTags()){
+        //to get all tags
+        tags+=j;
+        tags+=" ";
+      }
+      System.out.println(tags.trim()+"] - PAUSED");
+    }  
   }
 
   public void createPlaylist(String playlistName) {
-    System.out.println("createPlaylist needs implementation");
+    if(playlist.getPlaylist(playlistName)!=null)
+      System.out.println("Cannot create playlist: A playlist with the same name already exists");
+    else
+      playlist.addPlaylist(playlistName);
   }
 
   public void addVideoToPlaylist(String playlistName, String videoId) {
@@ -151,7 +196,18 @@ public class VideoPlayer {
   }
 
   public void showAllPlaylists() {
-    System.out.println("showAllPlaylists needs implementation");
+
+    List<String> allplaylists=playlist.getPlaylists();
+
+    //sort by title
+    Collections.sort(allplaylists );
+
+    System.out.println("Here's a list of all available videos:");
+    for (String i: allplaylists){
+
+      System.out.println(i);
+    }
+
   }
 
   public void showPlaylist(String playlistName) {

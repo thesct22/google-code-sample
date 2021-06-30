@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Comparator;
+import java.util.Random;
 
 public class VideoPlayer {
 
@@ -74,7 +75,27 @@ public class VideoPlayer {
   }
 
   public void playRandomVideo() {
-    System.out.println("playRandomVideo needs implementation");
+    //get all videos
+    List<Video> allvideos=videoLibrary.getVideos();
+    
+    //random value generator
+    Random random=new Random();
+    int index = random.nextInt(allvideos.size());
+
+    //get a random video
+    Video toplay=allvideos.get(index);
+
+    if(currentlyplaying.currentState()==-1){
+      System.out.println("Playing Video: "+toplay.getTitle());
+    }
+
+    //if a song is currently being played
+    else if(currentlyplaying.currentState()==1){
+      System.out.println("Stopping Video: "+currentlyplaying.currentVideo().getTitle());
+      System.out.println("Playing Video: "+toplay.getTitle());
+    }
+
+    currentlyplaying.changeVideo(toplay);
   }
 
   public void pauseVideo() {

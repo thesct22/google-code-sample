@@ -8,8 +8,6 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.Scanner;
 
-import javax.lang.model.util.ElementScanner6;
-
 public class VideoPlayer {
 
   private final VideoLibrary videoLibrary;
@@ -17,11 +15,13 @@ public class VideoPlayer {
   private VideoPlaylist playlist = new VideoPlaylist();
   private FlaggedVideos flaggedvideos= new FlaggedVideos();
   
+  //Comparator for sorting the videos by title
   Comparator<Video> compareByTitle = (Video o1, Video o2) -> o1.getTitle().compareTo( o2.getTitle() );
   public VideoPlayer() {
     this.videoLibrary = new VideoLibrary();
   }
 
+  //prints the number of videos in library
   public void numberOfVideos() {
     System.out.printf("%s videos in the library%n", videoLibrary.getVideos().size());
   }
@@ -30,6 +30,7 @@ public class VideoPlayer {
   //PART 1
 
 
+  //shows all videos in the library
   public void showAllVideos() {
     List<Video> allvideos=videoLibrary.getVideos();
 
@@ -37,16 +38,19 @@ public class VideoPlayer {
     Collections.sort(allvideos, compareByTitle );
 
     System.out.println("Here's a list of all available videos:");
+    
     for (Video i: allvideos){
+      
       String tags="";
-
       for(String j:i.getTags()){
+        
         //to get all tags
         tags+=j;
         tags+=" ";
       }
 
       System.out.print(i.getTitle()+" ("+i.getVideoId()+") ["+tags.trim()+"]");
+      
       String flaggedOrNot=flaggedvideos.findflagged(i.getVideoId());
       if(flaggedOrNot!=null)
         System.out.println(" - FLAGGED (reason: "+ flaggedOrNot+")");
@@ -54,15 +58,16 @@ public class VideoPlayer {
         System.out.println();
     }
   }
-
+  //play the video who's ID is given
   public void playVideo(String videoId) {
+    
     Video toplay=videoLibrary.getVideo(videoId);
-
     //if video not found
     if(toplay==null){
       System.out.println("Cannot play video: Video does not exist");
       return;
     }
+
     String flaggedOrNot=flaggedvideos.findflagged(videoId);
     if(flaggedOrNot!=null){
       System.out.print("Cannot play video: Video is currently flagged");
@@ -84,6 +89,7 @@ public class VideoPlayer {
     currentlyplaying.changeVideo(toplay);
   }
 
+  //to stop the currently played video
   public void stopVideo() {
   
     //if nothing is palaying currentstate is -1 (stopped)
@@ -99,18 +105,24 @@ public class VideoPlayer {
     }
   }
 
+  //to play a random video
   public void playRandomVideo() {
     //get all videos
     List<Video> allvideos=videoLibrary.getVideos();
     List<Video> allowedvideos=new LinkedList<>();
+    
+
+    //if the video is flagged exclude it
     for(Video i:allvideos){
       if(flaggedvideos.findflagged(i.getVideoId())==null){
         allowedvideos.add(i);
       }
     }
     
+    //I'm too lazy to rename all the variables below, plus reduces the space
     allvideos=allowedvideos;
 
+    //if no videos available print the same
     if(allvideos.size()==0){
       System.out.println("No videos available");
       return;
@@ -123,6 +135,7 @@ public class VideoPlayer {
     //get a random video
     Video toplay=allvideos.get(index);
 
+    //if currently stopped
     if(currentlyplaying.currentState()==-1){
       System.out.println("Playing video: "+toplay.getTitle());
     }
@@ -188,10 +201,9 @@ public class VideoPlayer {
       System.out.print(currentvideo.getTitle()+" (");
       System.out.print(currentvideo.getVideoId()+") [");
 
+      //to get all tags
       String tags="";
-
-      for(String j:currentvideo.getTags()){
-        //to get all tags
+      for(String j:currentvideo.getTags()){ 
         tags+=j;
         tags+=" ";
       }

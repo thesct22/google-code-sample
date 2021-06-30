@@ -3,13 +3,14 @@ package com.google;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
 
 /** A class used to represent a Playlist */
 class VideoPlaylist {
     VideoPlaylist(){
+
+        //linkedhashmap serves better since it remebers the order of insertion
         playlists=new LinkedHashMap<>();
     }
     private static LinkedHashMap<String, LinkedHashMap<String,Video>> playlists;
@@ -22,6 +23,7 @@ class VideoPlaylist {
 
     }
 
+    //delete a playlist
     public void deletePlaylist(String name){
         playlists.remove(name);
     }
@@ -41,8 +43,7 @@ class VideoPlaylist {
     //get all playlists
     ArrayList<String> getPlaylists() {
         Set<String> keySet = playlists.keySet();
-        ArrayList<String> listOfKeys = new ArrayList<String>(keySet);
-        return listOfKeys;
+        return new ArrayList<>(keySet);
     }
 
     //get playlists length
@@ -61,27 +62,39 @@ class VideoPlaylist {
             return null;
         return listofVideos.get(videoID);
     }
+
+    //add a video to the given playlist
     void addVideoToPlaylist(String playlistname, Video video){
         LinkedHashMap<String,Video> listofVideos=playlists.get(playlistname);
         if(listofVideos==null){
             listofVideos=new LinkedHashMap<>();
         }
+
+        //first get the necessary hashmap from outer hashmap, edit it and put it back
         listofVideos.put(video.getVideoId(),video);
         playlists.put(playlistname, listofVideos);
     }
+
+    //get a list of videos in a playlist
     ArrayList<Video> getVideos(String playlistname) {
         LinkedHashMap<String,Video> listofVideos=playlists.get(playlistname);
         if(listofVideos==null)
             return new ArrayList<>();
+        
+        //to remove null elements if any
         ArrayList<Video> raw= new ArrayList<>(listofVideos.values());
         raw.removeIf(Objects::isNull);
         return raw;
     }
+
+    //remove a gicen video from a playlist
     void removeVideoFromPlaylist(String toplaylist, Video toplay){
         LinkedHashMap<String,Video> listofVideos=playlists.get(toplaylist);
         if(listofVideos==null){
             listofVideos=new LinkedHashMap<>();
         }
+
+        //first get the necessary hashmap from outer hashmap, edit it and put it back
         listofVideos.remove(toplay.getVideoId());
         playlists.put(toplaylist, listofVideos);
     }

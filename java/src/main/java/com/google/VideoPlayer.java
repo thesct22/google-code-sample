@@ -53,8 +53,8 @@ public class VideoPlayer {
       System.out.println("Playing Video: "+toplay.getTitle());
     }
 
-    //if a song is currently being played
-    else if(currentlyplaying.currentState()==1){
+    //if a song is currently being played or paused
+    else if(currentlyplaying.currentState()==1||currentlyplaying.currentState()==0){
       System.out.println("Stopping Video: "+currentlyplaying.currentVideo().getTitle());
       System.out.println("Playing Video: "+toplay.getTitle());
     }
@@ -68,7 +68,9 @@ public class VideoPlayer {
     if(currentlyplaying.currentState()==-1){
       System.out.println("Cannot stop video: No video is currently playing");
     }  
-    else if(currentlyplaying.currentState()==1){
+
+    //if a song is currently played or paused
+    else if(currentlyplaying.currentState()==1||currentlyplaying.currentState()==0){
       System.out.println("Stopping Video: "+currentlyplaying.currentVideo().getTitle());
       currentlyplaying.changeState(-1);
     }
@@ -89,8 +91,8 @@ public class VideoPlayer {
       System.out.println("Playing Video: "+toplay.getTitle());
     }
 
-    //if a song is currently being played
-    else if(currentlyplaying.currentState()==1){
+    //if a song is currently being played or paused
+    else if(currentlyplaying.currentState()==1||currentlyplaying.currentState()==0){
       System.out.println("Stopping Video: "+currentlyplaying.currentVideo().getTitle());
       System.out.println("Playing Video: "+toplay.getTitle());
     }
@@ -99,11 +101,41 @@ public class VideoPlayer {
   }
 
   public void pauseVideo() {
-    System.out.println("pauseVideo needs implementation");
+    //if nothing is palaying currentstate is -1 (stopped)
+    if(currentlyplaying.currentState()==-1){
+      System.out.println("Cannot pause video: No video is currently playing");
+    }  
+
+    //if something is playing (currentstate is 1) pause it
+    else if(currentlyplaying.currentState()==1){
+      System.out.println("Pausing video: "+currentlyplaying.currentVideo().getTitle());
+      currentlyplaying.changeState(0);
+    }
+
+    //if paused already say that
+    else if(currentlyplaying.currentState()==0){
+      System.out.println("Video already paused: "+currentlyplaying.currentVideo().getTitle());
+    }  
+
   }
 
   public void continueVideo() {
-    System.out.println("continueVideo needs implementation");
+
+    //if stopped cannot continue
+    if(currentlyplaying.currentState()==-1){
+      System.out.println("Cannot continue video: No video is currently playing");
+    }  
+
+    //if something is playing (currentstate is 1) cannot continue again
+    else if(currentlyplaying.currentState()==1){
+      System.out.println("Cannot continue video: Video is not paused");
+    }
+
+    //if paused continue
+    else if(currentlyplaying.currentState()==0){
+      System.out.println("Continuing video: "+currentlyplaying.currentVideo().getTitle());
+      currentlyplaying.changeState(1);
+    }  
   }
 
   public void showPlaying() {

@@ -80,7 +80,7 @@ public class VideoPlayer {
       System.out.println("Playing video: "+toplay.getTitle());
     }
 
-    //if a song is currently being played or paused
+    //if a video is currently being played or paused
     else if(currentlyplaying.currentState()==1||currentlyplaying.currentState()==0){
       System.out.println("Stopping video: "+currentlyplaying.currentVideo().getTitle());
       System.out.println("Playing video: "+toplay.getTitle());
@@ -97,7 +97,7 @@ public class VideoPlayer {
       System.out.println("Cannot stop video: No video is currently playing");
     }  
 
-    //if a song is currently played or paused
+    //if a video is currently played or paused
     else if(currentlyplaying.currentState()==1||currentlyplaying.currentState()==0){
       System.out.println("Stopping video: "+currentlyplaying.currentVideo().getTitle());
       currentlyplaying.changeVideo(null);
@@ -140,7 +140,7 @@ public class VideoPlayer {
       System.out.println("Playing video: "+toplay.getTitle());
     }
 
-    //if a song is currently being played or paused
+    //if a video is currently being played or paused
     else if(currentlyplaying.currentState()==1||currentlyplaying.currentState()==0){
       System.out.println("Stopping video: "+currentlyplaying.currentVideo().getTitle());
       System.out.println("Playing video: "+toplay.getTitle());
@@ -245,15 +245,19 @@ public class VideoPlayer {
     }
   }
 
+  //adding video to an existing playlist
   public void addVideoToPlaylist(String playlistName, String videoId) {
 
+    //playlsit to add video to
     String toplaylist=playlist.getPlaylist(playlistName);
-
+    
+    //if playlist not found
     if(toplaylist==null){
       System.out.println("Cannot add video to "+playlistName+": Playlist does not exist");
       return;
     }
 
+    //video to add
     Video toplay=videoLibrary.getVideo(videoId);
 
     //if video not found
@@ -262,6 +266,7 @@ public class VideoPlayer {
       return;
     }
 
+    //check if the video is flagged or not
     String flaggedOrNot=flaggedvideos.findflagged(videoId);
     if(flaggedOrNot!=null){
       System.out.print("Cannot add video to "+toplaylist+": Video is currently flagged");
@@ -269,6 +274,7 @@ public class VideoPlayer {
       return;
     }
 
+    //find if the video is in playlist already or not
     if(playlist.findVideoinPL(videoId, toplaylist)!=null){
       System.out.println("Cannot add video to "+playlistName+": Video already added");
     }
@@ -279,6 +285,7 @@ public class VideoPlayer {
 
   }
 
+  //show the list of all playlists
   public void showAllPlaylists() {
 
     List<String> allplaylists=playlist.getPlaylists();
@@ -286,7 +293,10 @@ public class VideoPlayer {
       System.out.println("No playlists exist yet");
       return;
     }
+
     System.out.println("Showing all playlists:");
+
+    //sort by playlist title
     Collections.sort(allplaylists);
     for (String i: allplaylists){
       System.out.println(i);
@@ -294,7 +304,9 @@ public class VideoPlayer {
 
   }
 
+  //show all videos in a given playlist
   public void showPlaylist(String playlistName) {
+
     String toplaylist=playlist.getPlaylist(playlistName);
 
     if(toplaylist==null){
@@ -311,15 +323,17 @@ public class VideoPlayer {
     }
 
     for (Video i: listofvideos){
+      
+      //to get all tags
       String tags="";
-
       for(String j:i.getTags()){
-        //to get all tags
         tags+=j;
         tags+=" ";
       }
 
       System.out.print("  "+i.getTitle()+" ("+i.getVideoId()+") ["+tags.trim()+"]");
+
+      //add 'FLAGGED' to flagged videos
       String flaggedOrNot=flaggedvideos.findflagged(i.getVideoId());
       if(flaggedOrNot!=null)
         System.out.println(" - FLAGGED (reason: "+ flaggedOrNot+")");
@@ -328,14 +342,17 @@ public class VideoPlayer {
     }
   }
 
+  //remove video from given playlist
   public void removeFromPlaylist(String playlistName, String videoId) {
+    
+    //playlist to delete video from
     String toplaylist=playlist.getPlaylist(playlistName);
-
     if(toplaylist==null){
       System.out.println("Cannot remove video from "+playlistName+": Playlist does not exist");
       return;
     }
 
+    //video to delete (too lazy to change the variable name)
     Video toplay=videoLibrary.getVideo(videoId);
 
     //if video not found
@@ -344,6 +361,7 @@ public class VideoPlayer {
       return;
     }
 
+    //see if video is in playlist
     if(playlist.findVideoinPL(videoId, toplaylist)==null){
       System.out.println("Cannot remove video from "+playlistName+": Video is not in playlist");
     }
@@ -353,6 +371,7 @@ public class VideoPlayer {
     }
   }
 
+  //clear all videos in playlist
   public void clearPlaylist(String playlistName) {
     String toplaylist=playlist.getPlaylist(playlistName);
 
@@ -360,10 +379,13 @@ public class VideoPlayer {
       System.out.println("Cannot clear playlist "+playlistName+": Playlist does not exist");
       return;
     }
+
+    //if playlist is present just run add playlist again. Adding entry to hashmap again deletes previous entry
     playlist.addPlaylist(toplaylist);
     System.out.println("Successfully removed all videos from "+playlistName);
   }
 
+  //to delete a playlist
   public void deletePlaylist(String playlistName) {
     String toplaylist=playlist.getPlaylist(playlistName);
 
@@ -371,6 +393,8 @@ public class VideoPlayer {
       System.out.println("Cannot delete playlist "+playlistName+": Playlist does not exist");
       return;
     }
+
+    //if playlists exist, delete
     playlist.deletePlaylist(toplaylist);
     System.out.println("Deleted playlist: "+playlistName);
   }
@@ -378,61 +402,91 @@ public class VideoPlayer {
 
   //PART 3
 
-
+  //search a video from keyword in title
   public void searchVideos(String searchTerm) {
+
     List<Video> allvideos=videoLibrary.getVideos();
     List<Video> resultvideos=new LinkedList<>();
+    
+    //if video is flagged dont add in shortlist
+    //if video title contains the keyword shortlist it
     for(Video i:allvideos){
       String flaggedOrNot=flaggedvideos.findflagged(i.getVideoId());
       if(i.getTitle().toLowerCase().contains(searchTerm.toLowerCase()) && flaggedOrNot==null){
         resultvideos.add(i);
       }
     }
+
+    //too lazy to change variable name, and it helps in reducing space
     allvideos=resultvideos;
 
+    //if new list is empty no videos with the search term found
     if(allvideos.isEmpty()){
       System.out.println("No search results for "+searchTerm);
       return;
     }
+
     //sort by title
     Collections.sort(allvideos, compareByTitle );
 
     System.out.println("Here are the results for "+searchTerm+":");
+    
+    //to index the results
     int counter=0;
-    for (Video i: allvideos){
-      counter++;
-      String tags="";
 
+    for (Video i: allvideos){
+      
+      counter++;
+      
+      //to get all tags
+      String tags="";
       for(String j:i.getTags()){
-        //to get all tags
         tags+=j;
         tags+=" ";
       }
 
       System.out.println("  "+counter+") "+i.getTitle()+" ("+i.getVideoId()+") ["+tags.trim()+"]");
-    }  
+    } 
+    
+    //ask if the user wants to play any of the videos found. Type in the index of the video to play
+    //any any other entry is made dont play video
     System.out.println("Would you like to play any of the above? If yes, specify the number of the video.");
     System.out.println("If your answer is not a valid number, we will assume it's a no.");
+    
+    //takes in video index
     var scanner = new Scanner(System.in);
     String str=scanner.nextLine();
+    
+    //try if the entered value is a number between 1 and number of found videos
+    //else throw exception
     try{
+
       int num = Integer.parseInt(str);
       if(num>counter||num<1)
         throw new NumberFormatException("wrong number");
+
       Video toplay=allvideos.get(num-1);
       playVideo(toplay.getVideoId());
 
     } catch (NumberFormatException e) {}
   }
 
+  //search for videos with given tag
   public void searchVideosWithTag(String videotag) {
+
+    //if the tag to search doesn't start with '#' return that no results found
     if(videotag.charAt(0)!='#'){
       System.out.println("No search results for "+videotag);
       return;
     }
+    //remove # from tag for easier searching
     String videoTag=videotag.substring(1);
+
     List<Video> allvideos=videoLibrary.getVideos();
     List<Video> resultvideos=new LinkedList<>();
+
+    //don't add to list if video is flagged
+    //add to list if the tag contains the given search term
     for(Video i:allvideos){
       String flaggedOrNot=flaggedvideos.findflagged(i.getVideoId());
       for(String j:i.getTags()){
@@ -441,12 +495,16 @@ public class VideoPlayer {
         }
       }
     }
+
+    //lazy to chage variable below
     allvideos=resultvideos;
 
+    //if list empty, tag not found
     if(allvideos.isEmpty()){
       System.out.println("No search results for "+videotag);
       return;
     }
+
     //sort by title
     Collections.sort(allvideos, compareByTitle );
 
@@ -454,30 +512,47 @@ public class VideoPlayer {
     int counter=0;
     for (Video i: allvideos){
       counter++;
-      String tags="";
 
+      //to get all tags
+      String tags="";
       for(String j:i.getTags()){
-        //to get all tags
         tags+=j;
         tags+=" ";
       }
 
       System.out.println("  "+counter+") "+i.getTitle()+" ("+i.getVideoId()+") ["+tags.trim()+"]");
     }  
+
+    //ask if the user wants to play any of the videos found. Type in the index of the video to play
+    //any any other entry is made dont play video
     System.out.println("Would you like to play any of the above? If yes, specify the number of the video.");
     System.out.println("If your answer is not a valid number, we will assume it's a no.");
+    
+    //scans for the video index
     var scanner = new Scanner(System.in);
     String str=scanner.nextLine();
+    scanner.close();
+
+    //try if the entered value is a number between 1 and number of found videos
+    //else throw exception
     try{
+
       int num = Integer.parseInt(str);
       if(num>counter||num<1)
         throw new NumberFormatException("wrong number");
+
       Video toplay=allvideos.get(num-1);
       playVideo(toplay.getVideoId());
 
     } catch (NumberFormatException e) {}  }
 
+
+    //PART 4
+
+
+  //flag a video with default reason
   public void flagVideo(String videoId) {
+
     Video toflag=videoLibrary.getVideo(videoId);
 
     //if video not found
@@ -485,19 +560,27 @@ public class VideoPlayer {
       System.out.println("Cannot flag video: Video does not exist");
       return;
     }
+
+    //if the video is not already flagged flag it
     if(flaggedvideos.findflagged(videoId)==null){
       flaggedvideos.flagvideo(videoId);
+
+      //if the flagged video is currently not stopped then stop it
       if(currentlyplaying.currentState()!=-1 && currentlyplaying.currentVideo().getVideoId().equals(videoId))
         stopVideo();
+
       System.out.print("Successfully flagged video: "+toflag.getTitle());
       System.out.println(" (reason: "+flaggedvideos.findflagged(videoId)+ ")");
     }
+
+    //if the video is already flagged
     else{
       System.out.println("Cannot flag video: Video is already flagged");
     }
     
   }
 
+  //flag video with user given reason
   public void flagVideo(String videoId, String reason) {
     Video toflag=videoLibrary.getVideo(videoId);
 
@@ -507,18 +590,25 @@ public class VideoPlayer {
       return;
     }
 
+    //if the video is not already flagged flag it
     if(flaggedvideos.findflagged(videoId)==null){
         flaggedvideos.flagvideo(videoId,reason);
+
+        //if the flagged video is currently not stopped then stop it
         if(currentlyplaying.currentState()!=-1 && currentlyplaying.currentVideo().getVideoId().equals(videoId))
           stopVideo();
+        
         System.out.print("Successfully flagged video: "+toflag.getTitle());
         System.out.println(" (reason: "+flaggedvideos.findflagged(videoId)+ ")");
     }
+    
+    //if video flagged already say that
     else{
         System.out.println("Cannot flag video: Video is already flagged");
       }
   }
 
+  //to unflag (allow) a video
   public void allowVideo(String videoId) {
     Video toallow=videoLibrary.getVideo(videoId);
 
@@ -528,10 +618,13 @@ public class VideoPlayer {
       return;
     }
 
+    //if the video is flagged already unflag it
     if(flaggedvideos.findflagged(videoId)!=null){
         flaggedvideos.allowvideo(videoId);
         System.out.println("Successfully removed flag from video: "+toallow.getTitle());
     }
+
+    //if video is not flagged say you cannot unflag it
     else{
         System.out.println("Cannot remove flag from video: Video is not flagged");
       }
